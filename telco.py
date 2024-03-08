@@ -1,17 +1,17 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Dec  8 10:23:20 2023
-@author: GreyDoer
-"""
-
+import pickle
 import streamlit as st
-import joblib
 import pandas as pd
-import time
 from PIL import Image
+import joblib
+import time
 
-# Load the saved model
-lr_model_top_features = joblib.load('logistic_regression_model_top_features.joblib')
+# Load pre-saved model files
+model_file = 'model_C=1.0.bin'
+dv_file = model_file.replace('.bin', '_dv.joblib')
+rf_model_file = model_file.replace('.bin', '_rf.joblib')
+
+with open(model_file, 'rb') as f_in:
+    dv, rf_classifier = pickle.load(f_in)
 
 # Streamlit setup
 st.set_page_config(
@@ -24,67 +24,72 @@ st.markdown("<h1 style='text-align: center;'>Telco Customer Churn Prediction</h1
 image = Image.open('tel.jpg')
 st.image(image, caption='PHOTO FROM UNSPLASH-FREE STOCK PHOTO')
 
-
 # Sidebar for user input
 st.sidebar.title("Customer Churn Predictor")
+st.sidebar.info('This app is created to Predict Customer Churn')
 
-# Telco features input
-selected_features = ['PhoneService_Yes', 'PhoneService_No', 'MultipleLines_No phone service',
-                     'LongTermContract', 'MonthlyCharges', 'MonthlyAverageSpending', 'SeniorCitizen',
-                     'InternetService_Fiber optic', 'Contract_Month-to-month', 'InternetService_DSL']
+gender = st.sidebar.selectbox('Gender:', ['male', 'female'])
+seniorcitizen = st.sidebar.selectbox('Customer is a senior citizen 0 = no, 1 = yes:', [0, 1])
+partner = st.sidebar.selectbox('Customer has a partner:', ['yes', 'no'])
+dependents = st.sidebar.selectbox('Customer has dependents:', ['yes', 'no'])
+phoneservice = st.sidebar.selectbox('Customer has phoneservice:', ['yes', 'no'])
+multiplelines = st.sidebar.selectbox('Customer has multiplelines:', ['yes', 'no', 'no_phone_service'])
+internetservice = st.sidebar.selectbox('Customer has internetservice:', ['dsl', 'no', 'fiber_optic'])
+onlinesecurity = st.sidebar.selectbox('Customer has onlinesecurity:', ['yes', 'no', 'no_internet_service'])
+onlinebackup = st.sidebar.selectbox('Customer has onlinebackup:', ['yes', 'no', 'no_internet_service'])
+deviceprotection = st.sidebar.selectbox('Customer has deviceprotection:', ['yes', 'no', 'no_internet_service'])
+techsupport = st.sidebar.selectbox('Customer has techsupport:', ['yes', 'no', 'no_internet_service'])
+streamingtv = st.sidebar.selectbox('Customer has streamingtv:', ['yes', 'no', 'no_internet_service'])
+streamingmovies = st.sidebar.selectbox('Customer has streamingmovies:', ['yes', 'no', 'no_internet_service'])
+contract = st.sidebar.selectbox('Customer has a contract:', ['month-to-month', 'one_year', 'two_year'])
+paperlessbilling = st.sidebar.selectbox('Customer has a paperlessbilling:', ['yes', 'no'])
+paymentmethod = st.sidebar.selectbox('Payment Option:', ['bank_transfer_(automatic)', 'credit_card_(automatic)', 'electronic_check', 'mailed_check'])
+tenure = st.sidebar.number_input('Number of months the customer has been with the current telco provider :', min_value=0, max_value=240, value=0)
+monthlycharges = st.sidebar.number_input('Monthly charges :', min_value=0, max_value=240, value=0)
+totalcharges = st.sidebar.number_input('Total charges:', min_value=0, max_value=10000, value=0)
 
-# Create sliders or input fields for the selected features
-feature_values = {}
-for feature in selected_features:
-    if feature == 'SeniorCitizen':
-        feature_values[feature] = st.sidebar.checkbox(f'{feature}')
-    elif feature == 'PhoneService_Yes' or feature == 'PhoneService_No':
-        feature_values[feature] = st.sidebar.checkbox(f'{feature}')
-    elif feature == 'InternetService_Fiber optic' or feature == 'InternetService_DSL':
-        feature_values[feature] = st.sidebar.checkbox(f'{feature}')
-    elif feature == 'MultipleLines_No phone service':
-        feature_values[feature] = st.sidebar.checkbox(f'{feature}')
-    elif feature == 'LongTermContract':
-        feature_values[feature] = st.sidebar.selectbox(f'{feature}', ['Yes', 'No'])
-    elif feature == 'Contract_Month-to-month':
-        feature_values[feature] = st.sidebar.selectbox(f'{feature}', ['Yes', 'No'])
-    else:
-        feature_values[feature] = st.sidebar.number_input(f'{feature} ($)')
+input_dict = {
+    "gender": gender,
+    "seniorcitizen": seniorcitizen,
+    "partner": partner,
+    "dependents": dependents,
+    "phoneservice": phoneservice,
+    "multiplelines": multiplelines,
+    "internetservice": internetservice,
+    "onlinesecurity": onlinesecurity,
+    "onlinebackup": onlinebackup,
+    "deviceprotection": deviceprotection,
+    "techsupport": techsupport,
+    "streamingtv": streamingtv,
+    "streamingmovies": streamingmovies,
+    "contract": contract,
+    "paperlessbilling": paperlessbilling,
+    "paymentmethod": paymentmethod,
+    "tenure": tenure,
+    "monthlycharges": monthlycharges,
+    "totalcharges": totalcharges
+}
 
-# Predict churn on button click
-predict_button = st.sidebar.button('Predict Churn')
+# Prediction button
+predict_button = st.sidebar.button("Predict Churn")
 
-# Create a spinner in the main st context
-spinner = st.spinner('Predicting...')
-
-# Display the rolling predicting sign under the "Predict Churn" button
 if predict_button:
-    with spinner:
-        time.sleep(2)  # Simulating prediction time
+    with st.spinner('Predicting...'):
+        time.sleep(2)
 
-        # Prediction function
-        def predict_churn(features):
-            # Convert input features to the correct data types
-            features['SeniorCitizen'] = 1 if feature_values['SeniorCitizen'] else 0
-            features['PhoneService_Yes'] = 1 if feature_values['PhoneService_Yes'] else 0
-            features['PhoneService_No'] = 1 if feature_values['PhoneService_No'] else 0
-            features['MultipleLines_No phone service'] = 1 if feature_values['MultipleLines_No phone service'] else 0
-            features['LongTermContract'] = 1 if feature_values['LongTermContract'] == 'Yes' else 0
-            features['MonthlyCharges'] = feature_values['MonthlyCharges']
-            features['MonthlyAverageSpending'] = feature_values['MonthlyAverageSpending']
-            features['InternetService_Fiber optic'] = 1 if feature_values['InternetService_Fiber optic'] else 0
-            features['Contract_Month-to-month'] = 1 if feature_values['Contract_Month-to-month'] == 'Yes' else 0
-            features['InternetService_DSL'] = 1 if feature_values['InternetService_DSL'] else 0
+        # Prediction logic
+        try:
+            X = dv.transform([input_dict])  # Transform input data
+            y_pred = rf_classifier.predict_proba(X)[0, 1]  # Get churn probability
 
-            # Ensure the order of features matches the order during training
-            prediction = lr_model_top_features.predict(pd.DataFrame([features], columns=selected_features))
-            return prediction[0]  # 0 for not churn, 1 for churn
+            churn = y_pred >= 0.5  # Determine churn status
+            output_prob = float(y_pred)  # Store probability for display
+            output = "will churn" if churn else "will not churn"  # Set output message
 
-        # Get prediction
-        churn_prediction = predict_churn(feature_values)
-
-        # Display the result
-        if churn_prediction == 0:
-            st.sidebar.write("The model predicts that the customer will not churn.")
-        else:
-            st.sidebar.write("The model predicts that the customer will churn.")
+            st.sidebar.success('Prediction:')
+            st.sidebar.write(f"The model predicts that the customer {output}.")
+            st.sidebar.write(f"Churn probability: {output_prob:.4f}")
+            
+        except Exception as e:
+            st.sidebar.error("An error occurred during prediction:")
+            st.sidebar.write(e)
