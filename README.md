@@ -39,18 +39,6 @@ The project's context is to predict customer behavior to help in retaining custo
 - Total Charges
 - Churn
 
-## Top Features
-
-- Internet Service: Fiber Optic
-- Tenure Category: Long-Term
-- Streaming Movies: Yes
-- Streaming TV: Yes
-- Total Charges
-- Multiple Lines: Yes
-- Contract: Month-to-Month
-- Device Protection: Yes
-- Payment Method: Electronic Check
-- Online Security: No
 
 ## Contributing
 
