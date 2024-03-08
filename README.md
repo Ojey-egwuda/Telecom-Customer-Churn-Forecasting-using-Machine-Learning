@@ -48,6 +48,9 @@ The project's context is to predict customer behavior to help in retaining custo
 - Payment Method: Electronic Check
 - Online Security: No
 
+  ![telco](https://github.com/Ojey-egwuda/Telecom-Customer-Churn-Forecasting-using-Machine-Learning/assets/79419703/f8b1ab14-ad9c-412c-9e00-d4f2fdfa996e)
+
+
 ## Contributing
 
 Contributions are welcome! Fork this repository and submit a pull request with your changes.
