@@ -2,6 +2,10 @@
 
 This project aims to predict customer churn for a telecom company using machine learning techniques. We have used Logistic Regression and selected the top features to build the predictive model.
 
+
+ ![telco](https://github.com/Ojey-egwuda/Telecom-Customer-Churn-Forecasting-using-Machine-Learning/assets/79419703/f8b1ab14-ad9c-412c-9e00-d4f2fdfa996e)
+
+
 # About the Dataset
 
 The dataset used in this project aims to predict customer churn for a telecom company. Each row in the dataset represents a customer, and each column contains customer attributes as described in the column metadata. The goal is to analyze relevant customer data and develop focused customer retention programs.
@@ -47,9 +51,6 @@ The project's context is to predict customer behavior to help in retaining custo
 - Device Protection: Yes
 - Payment Method: Electronic Check
 - Online Security: No
-
-  ![telco](https://github.com/Ojey-egwuda/Telecom-Customer-Churn-Forecasting-using-Machine-Learning/assets/79419703/f8b1ab14-ad9c-412c-9e00-d4f2fdfa996e)
-
 
 ## Contributing
 
