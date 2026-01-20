@@ -1,5 +1,9 @@
 # Telecom-Customer-Churn-Forecasting-using-Machine-Learning
 
+🚀 <a href="https://telcochurnpred.streamlit.app/" target="_blank" rel="noopener noreferrer">Live App</a>
+
+👉 https://telcochurnpred.streamlit.app/
+
 This project aims to predict customer churn for a telecom company using machine learning techniques. We have used Logistic Regression and selected the top features to build the predictive model.
 
 
